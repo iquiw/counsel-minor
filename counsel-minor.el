@@ -1,4 +1,8 @@
-;;; counsel-minor.el --- -*- lexical-binding: t -*-
+;;; counsel-minor.el --- counsel to toggle minor mode  -*- lexical-binding: t -*-
+;;; Commentary:
+;;; Code:
+
+(require 'ivy)
 
 (defvar counsel-minor-map
   (let ((map (make-sparse-keymap)))
@@ -68,3 +72,6 @@ INITIAL-INPUT is used as initial-input parameter of completion filter."
  'counsel-minor-disabled
  `(("d" ,(lambda (x) (find-function (cdr x))) "definition")
    ("h" ,(lambda (x) (describe-function (cdr x))) "help")))
+
+(provide 'counsel-minor)
+;;; counsel-minor.el ends here
