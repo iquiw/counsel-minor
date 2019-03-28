@@ -1,0 +1,33 @@
+(defun test-foo-mode ())
+(defun test-bar-mode ())
+(defun test-baz-mode ())
+
+(ert-deftest counsel-minor-test-enabled-candidates ()
+  (let* ((baz-mode-lighter " Baz")
+         (minor-mode-list '(test-foo-mode test-bar-mode test-baz-mode))
+         (minor-mode-alist '((test-foo-mode " Foo") (test-baz-mode baz-mode-lighter))))
+
+    (let ((test-foo-mode t) (test-bar-mode t) (test-baz-mode t))
+      (should (equal (counsel--minor-candidates nil)
+                     '(("test-foo-mode \" Foo\"" . test-foo-mode)
+                       ("test-bar-mode" . test-bar-mode)
+                       ("test-baz-mode \" Baz\"" . test-baz-mode)))))
+
+    (let (test-foo-mode (test-bar-mode t) test-baz-mode)
+      (should (equal (counsel--minor-candidates nil)
+                     '(("test-bar-mode" . test-bar-mode)))))
+
+    (let (test-foo-mode test-bar-mode test-baz-mode)
+      (should (not (counsel--minor-candidates nil))))))
+
+(ert-deftest counsel-minor-test-enabled-candidates ()
+  (let* ((baz-mode-lighter " Baz")
+         (minor-mode-list '(test-foo-mode test-bar-mode test-baz-mode))
+         (minor-mode-alist '((test-foo-mode " Foo") (test-baz-mode baz-mode-lighter))))
+    (let ((test-foo-mode t) (test-bar-mode t) (test-baz-mode t))
+      (should (equal (counsel--minor-candidates nil)
+                     '(("test-foo-mode \" Foo\"" . test-foo-mode)
+                       ("test-bar-mode" . test-bar-mode)
+                       ("test-baz-mode \" Baz\"" . test-baz-mode)))))
+    (let (test-foo-mode test-bar-mode test-baz-mode)
+      (should (not (counsel--minor-candidates nil))))))
