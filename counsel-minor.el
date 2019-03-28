@@ -26,7 +26,7 @@ Otherwise, enabled minor modes are returned."
         (mapcar
          (lambda (mode)
            (when (and (boundp mode)
-                      (fboundp mode)
+                      (commandp mode)
                       (if disabled-modes
                           (not (symbol-value mode))
                         (symbol-value mode)))
