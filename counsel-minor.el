@@ -47,9 +47,10 @@ Otherwise, enabled minor modes are returned."
 
 If DISABLED-MODES is non-nil, disabled minor modes are displayed as candidate.
 Otherwise, enabled minor modes are displayed.
+When called interactively, disabled minor modes are displayed with prefix arg.
 
 INITIAL-INPUT is used as initial-input parameter of completion filter."
-  (interactive)
+  (interactive "P")
   (let ((prompt (if disabled-modes
                     "Enable minor mode: "
                   "Disable minor mode: ")))
