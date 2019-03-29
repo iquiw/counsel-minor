@@ -5,10 +5,10 @@
 (require 'ivy)
 
 (defun counsel--minor-candidates ()
-  "Return candidates of minor modes with lighter if available.
+  "Return completion alist for `counsel-minor'.
 
-If DISABLED-MODES is non-nil, disabled minor modes are returned.
-Otherwise, enabled minor modes are returned."
+The alist element is cons of minor mode string with its lighter
+and minor mode symbol."
   (delq nil
         (mapcar
          (lambda (mode)
@@ -27,9 +27,18 @@ Otherwise, enabled minor modes are returned."
                 minor-mode-list)))
 
 (defun counsel-minor (&optional initial-input)
-  "Toggle minor-mode with completion.
+  "Enable or disable minor mode.
 
-INITIAL-INPUT is used as initial-input parameter of completion filter."
+Disabled minor modes are prefixed with \"+\", and
+selecting one of these will enable it.
+Enabled minor modes are prefixed with \"-\", and
+selecting one of these will enable it.
+
+Additional actions:\\<ivy-minibuffer-map>
+
+  \\[ivy-dispatching-done] d: Go to minor mode definition
+  \\[ivy-dispatching-done] h: Describe minor mode"
+
   (interactive)
   (ivy-read "Minor modes (enable +mode or disable -mode): "
             (counsel--minor-candidates)
