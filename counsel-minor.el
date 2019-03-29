@@ -4,20 +4,7 @@
 
 (require 'ivy)
 
-(defvar counsel-minor-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map "!" #'counsel-minor-toggle)
-    map))
-
-(defun counsel-minor-toggle ()
-  "Toggle enabled and disabled minor modes for `counsel-minor'."
-  (interactive)
-  (ivy-exit-with-action
-   (lambda (_x)
-     (counsel-minor (eq (ivy-state-caller ivy-last) 'counsel-minor-enabled)
-                    ivy-text))))
-
-(defun counsel--minor-candidates (disabled-modes)
+(defun counsel--minor-candidates ()
   "Return candidates of minor modes with lighter if available.
 
 If DISABLED-MODES is non-nil, disabled minor modes are returned.
@@ -25,13 +12,10 @@ Otherwise, enabled minor modes are returned."
   (delq nil
         (mapcar
          (lambda (mode)
-           (when (and (boundp mode)
-                      (commandp mode)
-                      (if disabled-modes
-                          (not (symbol-value mode))
-                        (symbol-value mode)))
+           (when (and (boundp mode) (commandp mode))
              (let ((lighter (alist-get mode minor-mode-alist)))
                (cons (concat
+                      (if (symbol-value mode) "-" "+")
                       (symbol-name mode)
                       (propertize
                        (if lighter
@@ -42,35 +26,23 @@ Otherwise, enabled minor modes are returned."
                      mode))))
                 minor-mode-list)))
 
-(defun counsel-minor (&optional disabled-modes initial-input)
+(defun counsel-minor (&optional initial-input)
   "Toggle minor-mode with completion.
 
-If DISABLED-MODES is non-nil, disabled minor modes are displayed as candidate.
-Otherwise, enabled minor modes are displayed.
-When called interactively, disabled minor modes are displayed with prefix arg.
-
 INITIAL-INPUT is used as initial-input parameter of completion filter."
-  (interactive "P")
-  (let ((prompt (if disabled-modes
-                    "Enable minor mode: "
-                  "Disable minor mode: ")))
-    (ivy-read prompt (counsel--minor-candidates disabled-modes)
-              :require-match t
-              :initial-input initial-input
-              :keymap counsel-minor-map
-              :sort t
-              :action (lambda (x)
-                        (call-interactively (cdr x)))
-              :caller (if disabled-modes
-                          'counsel-minor-disabled
-                        'counsel-minor-enabled))))
+  (interactive)
+  (ivy-read "Minor modes (enable +mode or disable -mode): "
+            (counsel--minor-candidates)
+            :require-match t
+            :initial-input initial-input
+            :sort t
+            :action (lambda (x)
+                      (call-interactively (cdr x)))))
+
+(cl-pushnew '(counsel-minor . "^+ ") ivy-initial-inputs-alist :key #'car)
 
 (ivy-set-actions
- 'counsel-minor-enabled
- `(("d" ,(lambda (x) (find-function (cdr x))) "definition")
-   ("h" ,(lambda (x) (describe-function (cdr x))) "help")))
-(ivy-set-actions
- 'counsel-minor-disabled
+ 'counsel-minor
  `(("d" ,(lambda (x) (find-function (cdr x))) "definition")
    ("h" ,(lambda (x) (describe-function (cdr x))) "help")))
 
