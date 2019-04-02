@@ -26,7 +26,7 @@ and minor mode symbol."
                      mode))))
                 minor-mode-list)))
 
-(defun counsel-minor (&optional initial-input)
+(defun counsel-minor ()
   "Enable or disable minor mode.
 
 Disabled minor modes are prefixed with \"+\", and
@@ -43,7 +43,6 @@ Additional actions:\\<ivy-minibuffer-map>
   (ivy-read "Minor modes (enable +mode or disable -mode): "
             (counsel--minor-candidates)
             :require-match t
-            :initial-input initial-input
             :sort t
             :action (lambda (x)
                       (call-interactively (cdr x)))))
