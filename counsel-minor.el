@@ -47,7 +47,7 @@ Additional actions:\\<ivy-minibuffer-map>
             :action (lambda (x)
                       (call-interactively (cdr x)))))
 
-(cl-pushnew '(counsel-minor . "^+ ") ivy-initial-inputs-alist :key #'car)
+(cl-pushnew '(counsel-minor . "^+") ivy-initial-inputs-alist :key #'car)
 
 (ivy-set-actions
  'counsel-minor
